@@ -1,0 +1,1 @@
+apt install apache2 php8.3 php8.3-cli php8.3-common php8.3-curl php8.3-xml php8.3-mbstring libapache2-mod-php php-mysql mysql-client -y

@@ -1,10 +1,7 @@
 <?php
-$servername = "phpapp-db.cb4wsgmaiwwm.eu-west-2.rds.amazonaws.com";
-$username = "admin";
-$password = "0jrIXBCeGRBXK5fvfZ4f";
-$dbname = "account";
+require 'fetch_credentials.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+$conn = new mysqli($db_host, $db_username, $db_password, $db_name);
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
