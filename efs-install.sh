@@ -10,6 +10,7 @@ git clone https://github.com/aws/efs-utils
 cd efs-utils
 ./build-deb.sh
 sudo apt-get -y install ./build/amazon-efs-utils*deb
+cd ~
 
 # Create /var/www/html directory
 
@@ -37,11 +38,20 @@ php8.3-xml \
 php8.3-mbstring \
 libapache2-mod-php \
 php-mysql \
+git \
 mysql-client
 
+# Clone Source code from git
+
+git clone https://github.com/seunayolu/phpwebapp.git
+cd phpwebapp
+sudo cp -r parameter_store/*.php /var/www/html/
+sudo rm -r /var/www/html/*.html
+
 # Update /var/www/html directory permission
-# sudo chown www-data:www-data /var/www/html/*.php
-# sudo chmod 755 /var/www/html/*.php
+sudo chown www-data:www-data /var/www/html/*.php
+sudo chmod 755 /var/www/html/*.php
+cd ~
 
 # PHP Dependency to connect to AWS Parameter Store
 sudo apt install composer -y
