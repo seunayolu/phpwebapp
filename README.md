@@ -119,7 +119,3 @@ DESCRIBE users; # To check if the table was created successfully
    ```
 
 4. Test your application in a web browser by navigating to the public IP of your EC2 instance.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

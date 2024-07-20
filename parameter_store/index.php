@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Registration Form</title>
+    <title>Registration and Login</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,7 +28,7 @@
             margin-bottom: 5px;
             font-weight: bold;
         }
-        input[type="text"], input[type="email"] {
+        input[type="text"], input[type="email"], input[type="password"] {
             margin-bottom: 15px;
             padding: 10px;
             border: 1px solid #ddd;
@@ -63,16 +63,20 @@
             <input type="text" id="name" name="name" required>
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
             <button type="submit">Register</button>
         </form>
-        <div class="button-group">
-            <form action="list_users.php" method="GET">
-                <button type="submit">Generate User List</button>
-            </form>
-            <form action="download_users.php" method="GET">
-                <button type="submit">Download User List</button>
-            </form>
-        </div>
+        <h2>Login</h2>
+        <form action="login.php" method="POST">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Login</button>
+        </form>
     </div>
 </body>
 </html>
