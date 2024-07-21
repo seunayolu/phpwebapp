@@ -38,9 +38,9 @@
         <h2>Registered Users</h2>
         <ul>
         <?php
-        $servername = "phpapp-db.cb4wsgmaiwwm.eu-west-2.rds.amazonaws.com";
+        $servername = "simpleweb-db.ct0umckemt54.eu-west-1.rds.amazonaws.com";
         $username = "admin";
-        $password = "0jrIXBCeGRBXK5fvfZ4f";
+        $password = "4RzE44Lc97ryPQbUi6Zx";
         $dbname = "account";
 
         $conn = new mysqli($servername, $username, $password, $dbname);
