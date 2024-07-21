@@ -6,7 +6,7 @@ use Aws\Ssm\SsmClient;
 function getParameter($name) {
     $client = new SsmClient([
         'version' => 'latest',
-        'region'  => 'your-region' // e.g., 'us-west-2'
+        'region'  => 'eu-west-2' // e.g., 'us-west-2'
     ]);
 
     $result = $client->getParameter([
@@ -17,8 +17,8 @@ function getParameter($name) {
     return $result['Parameter']['Value'];
 }
 
-$db_host = getParameter('/myapp/DB_HOST');
-$db_username = getParameter('/myapp/DB_USERNAME');
-$db_password = getParameter('/myapp/DB_PASSWORD');
-$db_name = getParameter('/myapp/DB_NAME');
+$db_host = getParameter('/phpwebapp/DB_HOST');
+$db_username = getParameter('/phpwebapp/DB_USERNAME');
+$db_password = getParameter('/phpwebapp/DB_PASSWORD');
+$db_name = getParameter('/phpwebapp/DB_NAME');
 ?>

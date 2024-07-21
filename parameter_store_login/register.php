@@ -9,8 +9,10 @@ if ($conn->connect_error) {
 
 $name = $_POST['name'];
 $email = $_POST['email'];
+$username = $_POST['username'];
+$password = password_hash($_POST['password'], PASSWORD_BCRYPT);
 
-$sql = "INSERT INTO users (name, email) VALUES ('$name', '$email')";
+$sql = "INSERT INTO users (name, email, username, password) VALUES ('$name', '$email', '$username', '$password')";
 
 if ($conn->query($sql) === TRUE) {
     echo "New record created successfully";
