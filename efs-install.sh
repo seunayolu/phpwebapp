@@ -18,7 +18,7 @@ sudo mkdir -p /var/www/html
 
 # Variable for EFS
 
-EFS_DNS_NAME=fs-02b7d54beccda96e5.efs.eu-west-2.amazonaws.com
+EFS_DNS_NAME=fs-02accc65a4054a881.efs.eu-west-1.amazonaws.com
 
 # EFS Mount to the /var/www/html
 
