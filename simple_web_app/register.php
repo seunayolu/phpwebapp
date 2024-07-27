@@ -23,6 +23,6 @@ if ($conn->query($sql) === TRUE) {
 
 $conn->close();
 
-header("Location: /");
+// header("Location: /");
 exit();
 ?>
