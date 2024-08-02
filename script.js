@@ -10,6 +10,9 @@ document.getElementById('contactForm').addEventListener('submit', function(event
     .then(response => response.text())
     .then(data => {
         alert(data);
+        if (data === "Message sent successfully!") {
+            document.getElementById('contactForm').reset();
+        }
     })
     .catch(error => {
         console.error('Error:', error);

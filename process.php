@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 'Bucket' => $bucket,
                 'Key'    => $key,
                 'SourceFile' => $file_path,
-                'ACL'    => 'public-read' // Optional: adjust permissions as needed
+                //'ACL'    => 'public-read' // Optional: adjust permissions as needed
             ]);
             $attachment = $result['ObjectURL'];
         } catch (Exception $e) {
