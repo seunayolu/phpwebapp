@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Form with Attachment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .contact-form {
+            width: 300px;
+            margin: 0 auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .contact-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="contact-form">
+        <h2>Contact Form with Attachment</h2>
+        <form id="contactForm" enctype="multipart/form-data">
+            <input type="text" name="name" id="name" placeholder="Your Name" required>
+            <input type="email" name="email" id="email" placeholder="Your Email" required>
+            <textarea name="message" id="message" placeholder="Message..." required></textarea>
+            <input type="file" name="attachment" id="attachment">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
