@@ -1,17 +1,11 @@
 pipeline {
-    agent {
-        dockerfile {
-            label 'oluwaseuna/webapp'
-            registryUrl ' https://hub.docker.com/'
-            registryCredentialsId 'Docker-hub-repo'
-        }
-    }
+    agent any
 
     stages {
-        stage ('Images') {
+        stage ('Build Image') {
             steps {
-                echo 'Print docker images...'
-                sh 'docker images'
+                echo 'Build Docker Image from Dockerfile...'
+                sh 'docker buildx build -t oluwaseuna/phpwebapp .'
             }
         }
     }
