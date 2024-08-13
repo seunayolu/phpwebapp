@@ -8,7 +8,7 @@ pipeline {
     }
 
     stages {
-        stage {
+        stage ('Images') {
             steps {
                 echo 'Print docker images...'
                 sh 'docker images'
