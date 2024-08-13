@@ -1,8 +1,9 @@
 pipeline {
     agent {
-        docker {
-            image 'docker'
-            args '--privileged'
+        dockerfile {
+            label 'oluwaseuna/webapp'
+            registryUrl ' https://hub.docker.com/'
+            registryCredentialsId 'Docker-hub-repo'
         }
     }
 
@@ -10,15 +11,15 @@ pipeline {
         EC2_IP = '35.179.136.128'
     }
     stages {
-        stage('build_image') {
+        /*stage('build_image') {
             steps {
                 script {
                     echo "Build Docker Image with Dockerfile..."
                     sh 'docker build -t oluwaseuna/phpwebapp .'
                 }
             }
-        }
-        stage('push_image') {
+        }*/
+        /*stage('push_image') {
             steps {
                 script {
                     echo "Pushing Docker Image to Docker Hub Repo..."
@@ -28,8 +29,8 @@ pipeline {
                     }       
                 }
             }
-        }
-        stage('push') {
+        }*/
+        /*stage('push') {
             steps {
                 script {
                     echo "Deploying the application to EC2..."
@@ -40,7 +41,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
         /*stage('deploy') {
             steps {
                 script {
