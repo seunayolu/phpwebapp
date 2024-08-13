@@ -1,5 +1,9 @@
 pipeline {
     agent any
+
+    environment {
+        EC2_IP = '35.179.136.128'
+    }
     stages {
         stage('build_image') {
             steps {
@@ -24,10 +28,10 @@ pipeline {
             steps {
                 script {
                     echo "Deploying the application to EC2..."
-                    def dockerComposeCmd = 'docker compose -f docker-compose.yaml up --detach' 
+                    def dockerComposeCmd = 'docker compose -f docker-compose.yml up -d' 
                     sshagent(['ec-key']) {
-                        sh "scp -o StrictHostKeyChecking=no docker-compose.yaml ec2-user@18.130.225.104:/home/ec2-user"
-                        sh "ssh -o StrictHostKeyChecking=no ec2-user@18.130.225.104 ${dockerComposeCmd}"
+                        sh "scp -o StrictHostKeyChecking=no docker-compose.yml ubuntu@${EC2_IP}:/home/ubuntu"
+                        sh "ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} ${dockerComposeCmd}"
                     }
                 }
             }
