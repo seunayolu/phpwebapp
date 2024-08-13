@@ -6,4 +6,4 @@ services:
     ports:
       - "80:80"
     environment:
-      - AWS_REGION=eu-west-1
+      - AWS_REGION=eu-west-2
