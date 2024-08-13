@@ -6,4 +6,13 @@ pipeline {
             registryCredentialsId 'Docker-hub-repo'
         }
     }
+
+    stages {
+        stage {
+            steps {
+                echo 'Print docker images...'
+                sh 'docker images'
+            }
+        }
+    }
 }
