@@ -7,6 +7,18 @@ pipeline {
     }
 
     stages {
+        stage('Install Docker') {
+            steps {
+                script {
+                    echo "Installing Docker on EC2..."
+                    def dockerInstall = "bash ./docker.sh"
+                    sshagent(['EC2']) {
+                        sh "scp -o StrictHostKeyChecking=no docker.sh ubuntu@${EC2_IP}:/home/ubuntu"
+                        sh "ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} ${dockerInstall}"
+                    }
+                }
+            }
+        }
         stage ('Build Image') {
             steps {
                 echo 'Build Docker Image from Dockerfile...'
