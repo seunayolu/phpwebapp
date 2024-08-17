@@ -1,8 +1,8 @@
 services:
   # Webapp
   phpwebapp:
-    image: oluwaseuna/phpwebapp
-    container_name: phpwebapp
+    image: oluwaseuna/myapp
+    container_name: myapp
     ports:
       - "80:80"
     environment:
