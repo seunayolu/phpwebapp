@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         
-        EC2_IP = '35.179.136.128'
+        EC2_IP = '172.20.4.132'
     }
 
     stages {
@@ -37,6 +37,28 @@ pipeline {
                     }
                 }
             }
+        }
+
+        stage('Prune Docker System') {
+            steps {
+                script {
+                    echo 'Pruning Docker System'
+                    sh 'docker system prune -af'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up...'
+            sh 'docker system prune -af'
+        }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed.'
         }
     }
 }
