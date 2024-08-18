@@ -1,6 +1,12 @@
 pipeline {
     agent any
 
+    environment {
+        registryCreds = 'ecr:eu-west-2:awscreds'
+        repoUri = "767398114306.dkr.ecr.eu-west-2.amazonaws.com/phpwebapp"
+        repoRegisrtyUrl = "https://767398114306.dkr.ecr.eu-west-2.amazonaws.com"
+    }
+
     stages {
         
         stage ('fetch code') {
@@ -19,7 +25,7 @@ pipeline {
                     echo "Code Analysis with SonarQube..."
                     withSonarQubeEnv('sonar-server') {
                         sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=phpwebapp \
-                        -Dsonar.projectName=webapp \
+                        -Dsonar.projectName=contactform \
                         -Dsonar.projectVersion=1.0 \
                         -Dsonar.sources=app/'''
 
@@ -27,14 +33,16 @@ pipeline {
                 }
             }
         }
-        /*stage ('Build Image') {
+        stage ('Build Docker Image') {
             steps {
-                echo 'Build Docker Image from Dockerfile...'
-                sh 'docker buildx build -t oluwaseuna/phpwebapp .'
+                script {
+                    echo 'Build Docker Image from Dockerfile...'
+                    dockerImage = docker.build (repoUri + ":$BUILD_NUMBER")
+                }
             }
         }
 
-        stage('push_image') {
+        /*stage('push_image') {
             steps {
                 script {
                     echo "Pushing Docker Image to Docker Hub Repo..."
@@ -54,5 +62,53 @@ pipeline {
                 }
             }
         }*/
+    }
+    post {
+        always {
+            echo 'Notify Team members on Slack...'
+        
+            script {
+                // Define the COLOR_MAP directly here
+                def COLOR_MAP = [
+                'SUCCESS': '#00FF00', // Green
+                'FAILURE': '#FF0000', // Red
+                'UNSTABLE': '#FFFF00', // Yellow
+                'ABORTED': '#808080'  // Gray
+                ]
+            
+                // Check if the COLOR_MAP and currentResult are set
+                def buildResult = currentBuild.currentResult ?: 'UNKNOWN'
+                def color = COLOR_MAP[buildResult] ?: '#FFFF00' // default to yellow if not found
+            
+                // Additional build information
+                def buildDuration = currentBuild.durationString
+                def triggeredBy = 'Unknown'
+                if (currentBuild.getBuildCauses()) {
+                    for (cause in currentBuild.getBuildCauses()) {
+                        if (cause.userId) {
+                            triggeredBy = cause.userId
+                            break
+                        }
+                    }
+                }
+            
+                // Slack message content
+                def message = """
+                    *${buildResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}
+                    Triggered by: ${triggeredBy}
+                    Duration: ${buildDuration}
+                    More info at: ${env.BUILD_URL}
+                """.stripIndent()
+            
+                // Send the Slack notification
+                try {
+                    slackSend channel: '#build_jenkins',
+                          color: color,
+                          message: message
+                } catch (Exception e) {
+                    echo "Failed to send Slack notification: ${e.message}"
+                }
+            }
+        }
     }
 }

@@ -7,6 +7,9 @@ WORKDIR /var/www/html
 # Install dependencies and enable necessary Apache modules in a single RUN command
 RUN apt-get update && apt-get install -y \
     libpng-dev \
+    zip \
+    unzip \
+    git \
     && docker-php-ext-install pdo pdo_mysql \
     && a2enmod rewrite \
     && apt-get clean \
