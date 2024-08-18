@@ -56,14 +56,14 @@ pipeline {
             }
         }
 
-        /*stage('Prune Docker System') {
+        stage('Prune Docker System') {
             steps {
                 script {
                     echo 'Pruning Docker System'
                     sh 'docker system prune -af'
                 }
             }
-        }*/
+        }
     }
     post {
         always {
@@ -111,19 +111,6 @@ pipeline {
                     echo "Failed to send Slack notification: ${e.message}"
                 }
             }
-        }
-    }
-
-    post {
-        always {
-            echo 'Cleaning up...'
-            sh 'docker system prune -af'
-        }
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed.'
         }
     }
 }
