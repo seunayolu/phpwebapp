@@ -5,6 +5,8 @@ pipeline {
         registryCreds = 'ecr:eu-west-2:awscreds'
         repoUri = "767398114306.dkr.ecr.eu-west-2.amazonaws.com/phpwebapp"
         repoRegisrtyUrl = "https://767398114306.dkr.ecr.eu-west-2.amazonaws.com"
+        cluster = "clustername"
+        service = "servicename"
     }
 
     stages {
@@ -33,7 +35,7 @@ pipeline {
                 }
             }
         }
-        stage ('Build Docker Image') {
+        stage ('Build_Docker_Image') {
             steps {
                 script {
                     echo 'Build Docker Image from Dockerfile...'
@@ -42,19 +44,19 @@ pipeline {
             }
         }
 
-        /*stage('push_image') {
+        stage('Push_Image_to_ECR') {
             steps {
                 script {
-                    echo "Pushing Docker Image to Docker Hub Repo..."
-                    withCredentials([usernamePassword(credentialsId: 'Docker-hub-repo', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                        sh "echo $PASS | docker login -u $USER --password-stdin"
-                        sh 'docker push oluwaseuna/phpwebapp'
-                    }       
+                    echo "Pushing Docker Image to ECR..."
+                    docker.withRegistry(repoRegisrtyUrl, registryCreds) {
+                        dockerImage.push("$BUILD_NUMBER")
+                        dockerImage.push('latest')
+                    }
                 }
             }
         }
 
-        stage('Prune Docker System') {
+        /*stage('Prune Docker System') {
             steps {
                 script {
                     echo 'Pruning Docker System'
@@ -109,6 +111,19 @@ pipeline {
                     echo "Failed to send Slack notification: ${e.message}"
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up...'
+            sh 'docker system prune -af'
+        }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed.'
         }
     }
 }

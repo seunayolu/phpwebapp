@@ -12,7 +12,7 @@ $dotenv->load();
 // Fetch database credentials from AWS Parameter Store
 $ssm = new SsmClient([
     'version' => 'latest',
-    'region'  => 'eu-west-1'
+    'region'  => 'eu-west-2'
 ]);
 
 function getParameter($ssm, $name) {
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_FILES['attachment']) && $_FILES['attachment']['error'] == 0) {
         $s3 = new S3Client([
             'version' => 'latest',
-            'region'  => 'eu-west-1'
+            'region'  => 'eu-west-2'
         ]);
 
         $bucket = $_ENV['S3_BUCKET_NAME'];
