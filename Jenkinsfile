@@ -5,8 +5,8 @@ pipeline {
         registryCreds = 'ecr:eu-west-2:awscreds'
         repoUri = "767398114306.dkr.ecr.eu-west-2.amazonaws.com/phpwebapp"
         repoRegisrtyUrl = "https://767398114306.dkr.ecr.eu-west-2.amazonaws.com"
-        cluster = "clustername"
-        service = "servicename"
+        cluster = "webapp"
+        service = "webapptask-svc"
     }
 
     stages {
@@ -51,6 +51,17 @@ pipeline {
                     docker.withRegistry(repoRegisrtyUrl, registryCreds) {
                         dockerImage.push("$BUILD_NUMBER")
                         dockerImage.push('latest')
+                    }
+                }
+            }
+        }
+
+        stage ('Deploy to ECS') {
+            steps {
+                script {
+                    echo "Deploying Image to ECS..."
+                    withAWS(credentials: 'awscreds', region: 'eu-west-2') {
+                        sh 'aws ecs update-service --cluster ${cluster} --service ${service} --force-new-deployment'
                     }
                 }
             }
