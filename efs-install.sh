@@ -18,7 +18,7 @@ sudo mkdir -p /var/www/html
 
 # Variable for EFS
 
-EFS_DNS_NAME=fs-02accc65a4054a881.efs.eu-west-1.amazonaws.com
+EFS_DNS_NAME=fs-0eea75a5cff969475.efs.eu-west-1.amazonaws.com
 
 # EFS Mount to the /var/www/html
 
@@ -55,5 +55,10 @@ cd ~
 
 # PHP Dependency to connect to AWS Parameter Store
 sudo apt install composer -y
+
+# Install aws-sdk-php 
+
+cd /var/www/html
+sudo composer require aws/aws-sdk-php -y
 
 
