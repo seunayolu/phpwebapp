@@ -58,7 +58,7 @@ This repository contains a simple PHP web application for user registration and 
 3. Install AWS SDK for PHP using Composer:
    ```bash
    cd /var/www/html
-   composer require aws/aws-sdk-php
+   composer require aws/aws-sdk-php -n
    ```
 
 ### Step 4: Create a Helper Script to Fetch Parameters
