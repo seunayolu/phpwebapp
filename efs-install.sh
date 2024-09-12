@@ -59,6 +59,6 @@ sudo apt install composer -y
 # Install aws-sdk-php 
 
 cd /var/www/html
-sudo composer require aws/aws-sdk-php -y
+composer require aws/aws-sdk-php -n
 
 
