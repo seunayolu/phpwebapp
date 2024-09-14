@@ -47,13 +47,13 @@ mysql-client
 git clone -b contactform https://github.com/seunayolu/phpwebapp.git
 sudo rm -r /var/www/html/*.html
 cd phpwebapp/app
-sudo cp -r phpwebapp/app/* /var/www/html/
+sudo cp -r ./* /var/www/html/
 
 # Update /var/www/html directory permission
-#sudo chown www-data:www-data /var/www/html/*.php
-#sudo chmod 755 /var/www/html/*.php
+sudo chown www-data:www-data /var/www/html/*.php
+sudo chmod 755 /var/www/html/*.php
 
 # Install aws-sdk-php 
 
 cd /var/www/html
-composer install -n
+sudo composer install -n
