@@ -1,25 +1,33 @@
 pipeline {
     agent any
 
-    environment {
-        
-        EC2_IP = '172.20.4.132'
-    }
-
     stages {
-        stage('Install Docker') {
+        
+        stage ('fetch code') {
+            steps {
+                echo 'Fetch code from Github Repo'
+                git branch: 'jenkins', url: 'https://github.com/seunayolu/phpwebapp.git'
+            }
+        }
+        
+        stage('Code Analysis') {
+            environment {
+                scannerHome = tool 'sonar-scanner-6'
+            }
             steps {
                 script {
-                    echo "Installing Docker on EC2..."
-                    def dockerInstall = "bash ./docker.sh"
-                    sshagent(['EC2']) {
-                        sh "scp -o StrictHostKeyChecking=no docker.sh ubuntu@${EC2_IP}:/home/ubuntu"
-                        sh "ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} ${dockerInstall}"
+                    echo "Code Analysis with SonarQube..."
+                    withSonarQubeEnv('sonar-server') {
+                        sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=phpwebapp \
+                        -Dsonar.projectName=webapp \
+                        -Dsonar.projectVersion=1.0 \
+                        -Dsonar.sources=app/'''
+
                     }
                 }
             }
         }
-        stage ('Build Image') {
+        /*stage ('Build Image') {
             steps {
                 echo 'Build Docker Image from Dockerfile...'
                 sh 'docker buildx build -t oluwaseuna/phpwebapp .'
@@ -38,19 +46,6 @@ pipeline {
             }
         }
 
-        stage('DeploytoEC2') {
-            steps {
-                script {
-                    echo "Deploying the application to EC2..."
-                    def dockerComposeCmd = 'docker compose -f docker-compose.yml up -d' 
-                    sshagent(['EC2']) {
-                        sh "scp -o StrictHostKeyChecking=no docker-compose.yml ubuntu@${EC2_IP}:/home/ubuntu"
-                        sh "ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} ${dockerComposeCmd}"
-                    }
-                }
-            }
-        }
-
         stage('Prune Docker System') {
             steps {
                 script {
@@ -58,19 +53,6 @@ pipeline {
                     sh 'docker system prune -af'
                 }
             }
-        }
-    }
-
-    post {
-        always {
-            echo 'Cleaning up...'
-            sh 'docker system prune -af'
-        }
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed.'
-        }
+        }*/
     }
 }
