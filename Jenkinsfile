@@ -3,21 +3,13 @@ pipeline {
 
     environment {
         registryCreds = 'ecr:eu-west-2:awscreds'
-        repoUri = "767398114306.dkr.ecr.eu-west-2.amazonaws.com/phpwebapp"
-        repoRegisrtyUrl = "https://767398114306.dkr.ecr.eu-west-2.amazonaws.com"
+        repoUri = "442042522885.dkr.ecr.eu-west-2.amazonaws.com/phpwebapp"
+        repoRegisrtyUrl = "https://442042522885.dkr.ecr.eu-west-2.amazonaws.com"
         cluster = "webapp"
         service = "webapptask-svc"
     }
 
     stages {
-        
-        stage ('fetch code') {
-            steps {
-                echo 'Fetch code from Github Repo'
-                git branch: 'contactform', url: 'https://github.com/seunayolu/phpwebapp.git'
-            }
-        }
-        
         stage('Code Analysis') {
             environment {
                 scannerHome = tool 'sonar-scanner-6'
@@ -56,7 +48,7 @@ pipeline {
             }
         }
 
-        stage ('Deploy to ECS') {
+        /*stage ('Deploy to ECS') {
             steps {
                 script {
                     echo "Deploying Image to ECS..."
@@ -65,7 +57,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
 
         stage('Prune Docker System') {
             steps {
@@ -115,7 +107,7 @@ pipeline {
             
                 // Send the Slack notification
                 try {
-                    slackSend channel: '#build_jenkins',
+                    slackSend channel: '#jenkins-build',
                           color: color,
                           message: message
                 } catch (Exception e) {
