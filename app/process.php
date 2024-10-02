@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $message = $_POST['message'];
     $attachment = '';
 
-    // Upload to S3 if file is uploaded
+    // Upload to S3 if file is uploaded!
     if (isset($_FILES['attachment']) && $_FILES['attachment']['error'] == 0) {
         $s3 = new S3Client([
             'version' => 'latest',
