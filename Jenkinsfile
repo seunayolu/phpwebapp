@@ -4,7 +4,7 @@ pipeline {
     environment {
         registryCreds = 'ecr:eu-west-2:awscreds'
         repoUri = "442042522885.dkr.ecr.eu-west-2.amazonaws.com/phpwebapp"
-        repoRegisrtyUrl = "https://442042522885.dkr.ecr.eu-west-2.amazonaws.com"
+        repoRegistryUrl = "https://442042522885.dkr.ecr.eu-west-2.amazonaws.com"
         cluster = "webapp"
         service = "webapptask-svc"
     }
@@ -40,7 +40,7 @@ pipeline {
             steps {
                 script {
                     echo "Pushing Docker Image to ECR..."
-                    docker.withRegistry(repoRegisrtyUrl, registryCreds) {
+                    docker.withRegistry('repoRegistryUrl', 'registryCreds') {
                         dockerImage.push("$BUILD_NUMBER")
                         dockerImage.push('latest')
                     }
