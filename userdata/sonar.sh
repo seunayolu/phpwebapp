@@ -95,6 +95,8 @@ sudo systemctl start sonarqube
 sudo rm -rf /etc/nginx/sites-enabled/default /etc/nginx/sites-available/default
 cat <<EOT | sudo tee /etc/nginx/sites-available/sonarqube
 server {
+    client_max_body_size 50M;
+    
     listen 80;
     server_name _;
 

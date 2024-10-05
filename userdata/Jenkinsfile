@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+
+    environment {
+        EC2_IP = '52.16.224.240'
+    }
+
+    stages {
+        stage('fetch code') {
+            steps {
+                script {
+                    echo 'Pull source code from Git'
+                    git branch: 'jenkins', url: 'https://github.com/seunayolu/jenkins_deploy_ec2.git'
+                }
+            }
+        }
+
+        stage('deloy to ec2') {
+            steps {
+                script {
+                    echo "deploying shell-script to ec2"
+                    def script = "bash ./websetup.sh"
+                    sshagent(['ec2']) {
+                        sh "scp -o StrictHostKeyChecking=no websetup.sh ubuntu@${EC2_IP}:/home/ubuntu"
+                        sh "ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} ${script} "
+                    }
+                }
+            }
+        }
+    }
+}
