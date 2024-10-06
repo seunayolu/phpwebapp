@@ -5,7 +5,7 @@ pipeline {
         registryCreds = 'ecr:eu-west-2:awscreds'
         repoUri = "442042522885.dkr.ecr.eu-west-2.amazonaws.com/phpwebapp"
         repoRegistryUrl = "https://442042522885.dkr.ecr.eu-west-2.amazonaws.com"
-        cluster = "webapp"
+        cluster = "phpwebapp"
         service = "webapptask-svc"
     }
 
@@ -48,7 +48,7 @@ pipeline {
             }
         }
 
-        /*stage ('Deploy to ECS') {
+        stage ('Deploy to ECS') {
             steps {
                 script {
                     echo "Deploying Image to ECS..."
@@ -57,7 +57,7 @@ pipeline {
                     }
                 }
             }
-        }*/
+        }
 
         stage('Prune Docker System') {
             steps {
