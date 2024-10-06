@@ -7,6 +7,7 @@ pipeline {
     }
 
     environment {
+        DOCKER_CONFIG = '/tmp/.docker'  // Set to a directory with write access
         repoUri = "442042522885.dkr.ecr.us-west-2.amazonaws.com/webapp"
     }
 
@@ -24,6 +25,7 @@ pipeline {
             steps{
                 script{
                     echo 'Build Docker Image from Dockerfile...'
+                    sh 'mkdir -p /tmp/.docker'  // Ensure the directory exists
                     dockerImage = docker.build (repoUri + ":$BUILD_NUMBER", "./multistage/")
                 }
             }
