@@ -26,6 +26,7 @@ pipeline {
                 script{
                     echo 'Build Docker Image from Dockerfile...'
                     sh 'mkdir -p /tmp/.docker'  // Ensure the directory exists
+                    sh 'ls -l'
                     dockerImage = docker.build (repoUri + ":$BUILD_NUMBER", "./multistage/")
                 }
             }
