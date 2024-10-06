@@ -9,6 +9,8 @@ pipeline {
     environment {
         DOCKER_CONFIG = '/tmp/.docker'  // Set to a directory with write access
         repoUri = "442042522885.dkr.ecr.us-west-2.amazonaws.com/webapp"
+        repoRegistryUrl = "https://442042522885.dkr.ecr.us-west-2.amazonaws.com"
+        registryCreds = 'ecr:us-west-2:awscreds'
     }
 
     stages{
@@ -27,6 +29,17 @@ pipeline {
                     echo 'Build Docker Image from Dockerfile...'
                     sh 'mkdir -p /tmp/.docker'  // Ensure the directory exists
                     dockerImage = docker.build (repoUri + ":$BUILD_NUMBER")
+                }
+            }
+        }
+        stage('push image') {
+            steps {
+                script {
+                    echo "Pushing Docker Image to ECR..."
+                    docker.withRegistry(repoRegistryUrl, registryCreds) {
+                        dockerImage.push("$BUILD_NUMBER")
+                        dockerImage.push('latest')
+                    }
                 }
             }
         }
