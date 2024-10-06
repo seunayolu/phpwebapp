@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'docker:latest'
-            args '-v /var/run/docker.sock:/var/run/docker.sock' // Mount Docker socket
+            args '-v /var/run/docker.sock:/var/run/docker.sock -v $PWD:/workspace' // Mount Docker socket
         }
     }
 
@@ -26,8 +26,9 @@ pipeline {
                 script{
                     echo 'Build Docker Image from Dockerfile...'
                     sh 'mkdir -p /tmp/.docker'  // Ensure the directory exists
-                    sh 'ls -l'
-                    dockerImage = docker.build (repoUri + ":$BUILD_NUMBER", "./multistage/")
+                    sh 'ls -l /workspace'
+                    sh 'cd /workspace'
+                    //dockerImage = docker.build (repoUri + ":$BUILD_NUMBER", "./multistage/")
                 }
             }
         }
