@@ -28,7 +28,7 @@ pipeline {
                     sh 'mkdir -p /tmp/.docker'  // Ensure the directory exists
                     sh 'ls -l /workspace'
                     sh 'cd /workspace'
-                    //dockerImage = docker.build (repoUri + ":$BUILD_NUMBER", "./multistage/")
+                    dockerImage = docker.build (repoUri + ":$BUILD_NUMBER", "./multistage/")
                 }
             }
         }
