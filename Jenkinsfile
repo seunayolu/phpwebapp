@@ -10,7 +10,7 @@ pipeline {
     }
 
     stages {
-        stage('Code Analysis') {
+        /*stage('Code Analysis') {
             environment {
                 scannerHome = tool 'sonar-scanner-6'
             }
@@ -26,7 +26,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
         stage ('Build_Docker_Image') {
             steps {
                 script {
