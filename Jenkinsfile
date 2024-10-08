@@ -11,6 +11,8 @@ pipeline {
         repoUri = "442042522885.dkr.ecr.us-west-2.amazonaws.com/webapp"
         repoRegistryUrl = "https://442042522885.dkr.ecr.us-west-2.amazonaws.com"
         registryCreds = 'ecr:us-west-2:awscreds'
+        cluster = "phpwebapp"
+        service = "webapptask-svc"
     }
 
     stages{
