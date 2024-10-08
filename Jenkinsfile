@@ -13,14 +13,22 @@ pipeline {
         registryCreds = 'ecr:us-west-2:awscreds'
         cluster = "phpwebapp"
         service = "webapptask-svc"
+        region = 'us-west-2'
     }
 
     stages{
-        stage ('docker test') {
-            steps{
-                script{
-                    sh 'docker ps'
-                    sh 'docker network create jenkins_docker || true'
+        
+        stage('Install AWS CLI') {
+            steps {
+                script {
+                    echo "Installing AWS CLI..."
+                    sh '''
+                        apk update && apk add --no-cache python3 py3-pip curl unzip
+                        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+                        unzip awscliv2.zip
+                        ./aws/install
+                        aws --version
+                    '''
                 }
             }
         }
@@ -47,15 +55,15 @@ pipeline {
             }
         }
 
-        /*stage ('Deploy to ECS') {
+        stage ('Deploy to ECS') {
             steps {
                 script {
                     echo "Deploying Image to ECS..."
-                    withAWS(credentials: 'awscreds', region: 'eu-west-2') {
+                    withAWS(credentials: 'awscreds', region: "${region}") {
                         sh 'aws ecs update-service --cluster ${cluster} --service ${service} --force-new-deployment'
                     }
                 }
             }
-        }*/
+        }
     }
 }
