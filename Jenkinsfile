@@ -32,6 +32,7 @@ pipeline {
                 }
             }
         }
+
         stage('push image') {
             steps {
                 script {
@@ -43,5 +44,16 @@ pipeline {
                 }
             }
         }
+
+        /*stage ('Deploy to ECS') {
+            steps {
+                script {
+                    echo "Deploying Image to ECS..."
+                    withAWS(credentials: 'awscreds', region: 'eu-west-2') {
+                        sh 'aws ecs update-service --cluster ${cluster} --service ${service} --force-new-deployment'
+                    }
+                }
+            }
+        }*/
     }
 }
