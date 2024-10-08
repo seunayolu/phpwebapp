@@ -45,6 +45,15 @@ pipeline {
                 }
             }
         }
+        // Purge the Jenkins Server
+        stage('Prune Docker System') {
+            steps {
+                script {
+                    echo 'Pruning Docker System'
+                    sh 'docker system prune -af --volumes'
+                }
+            }
+        }
 
         // Use a pre-built AWS CLI image for the ECS deployment stage
         stage('Deploy to ECS') {
