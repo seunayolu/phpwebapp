@@ -1,8 +1,8 @@
 pipeline {
     agent {
         docker {
-            image 'docker:latest'
-            args '-v /var/run/docker.sock:/var/run/docker.sock' // Mount Docker socket
+            image 'docker:latest'  // Use Docker agent for build and push stages
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
 
@@ -16,34 +16,25 @@ pipeline {
         region = 'us-west-2'
     }
 
-    stages{
-        
-        stage('Install AWS CLI') {
+    stages {
+        stage('Docker Test') {
             steps {
                 script {
-                    echo "Installing AWS CLI..."
-                    sh '''
-                        apk update && apk add --no-cache python3 py3-pip curl unzip
-                        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-                        unzip awscliv2.zip
-                        ./aws/install
-                        aws --version
-                    '''
+                    sh 'docker ps'
                 }
             }
         }
 
-        stage ('build image') {
-            steps{
-                script{
-                    echo 'Build Docker Image from Dockerfile...'
-                    sh 'mkdir -p /tmp/.docker'  // Ensure the directory exists
-                    dockerImage = docker.build (repoUri + ":$BUILD_NUMBER")
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    echo 'Building Docker Image from Dockerfile...'
+                    dockerImage = docker.build(repoUri + ":$BUILD_NUMBER", ".")
                 }
             }
         }
 
-        stage('push image') {
+        stage('Push Docker Image to ECR') {
             steps {
                 script {
                     echo "Pushing Docker Image to ECR..."
@@ -55,12 +46,18 @@ pipeline {
             }
         }
 
-        stage ('Deploy to ECS') {
+        // Use a pre-built AWS CLI image for the ECS deployment stage
+        stage('Deploy to ECS') {
+            agent {
+                docker {
+                    image 'amazon/aws-cli'  // Use a pre-built AWS CLI Docker image
+                }
+            }
             steps {
                 script {
                     echo "Deploying Image to ECS..."
                     withAWS(credentials: 'awscreds', region: "${region}") {
-                        sh 'aws ecs update-service --cluster ${cluster} --service ${service} --force-new-deployment'
+                        sh "aws ecs update-service --cluster ${cluster} --service ${service} --force-new-deployment"
                     }
                 }
             }
