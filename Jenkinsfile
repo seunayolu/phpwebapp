@@ -1,12 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'docker:latest'  // Use Docker agent for build and push stages
-            reuseNode true  // reuse the same container for consistency
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
-
+    agent none  // No global agent, each stage will define its own
     environment {
         DOCKER_CONFIG = '/tmp/.docker'  // Set to a directory with write access
         repoUri = "442042522885.dkr.ecr.us-west-2.amazonaws.com/webapp"
@@ -14,10 +7,17 @@ pipeline {
         registryCreds = 'ecr:us-west-2:awscreds'
         cluster = "phpwebapp"
         service = "webapptask-svc"
+        region = 'us-west-2'
     }
 
     stages {
         stage('Docker Test') {
+            agent {
+                docker {
+                    image 'docker:latest'
+                    args '-v /var/run/docker.sock:/var/run/docker.sock'  // Mount Docker socket
+                }
+            }
             steps {
                 script {
                     sh 'docker ps'
@@ -26,6 +26,12 @@ pipeline {
         }
 
         stage('Build Docker Image') {
+            agent {
+                docker {
+                    image 'docker:latest'
+                    args '-v /var/run/docker.sock:/var/run/docker.sock'  // Mount Docker socket
+                }
+            }
             steps {
                 script {
                     echo 'Building Docker Image from Dockerfile...'
@@ -36,6 +42,12 @@ pipeline {
         }
 
         stage('Push Docker Image to ECR') {
+            agent {
+                docker {
+                    image 'docker:latest'
+                    args '-v /var/run/docker.sock:/var/run/docker.sock'  // Mount Docker socket
+                }
+            }
             steps {
                 script {
                     echo "Pushing Docker Image to ECR..."
@@ -46,8 +58,14 @@ pipeline {
                 }
             }
         }
-        // Purge the Jenkins Server
+
         stage('Prune Docker System') {
+            agent {
+                docker {
+                    image 'docker:latest'
+                    args '-v /var/run/docker.sock:/var/run/docker.sock'  // Mount Docker socket
+                }
+            }
             steps {
                 script {
                     echo 'Pruning Docker System'
@@ -56,18 +74,18 @@ pipeline {
             }
         }
 
-        // Use a pre-built AWS CLI image for the ECS deployment stage
         stage('Deploy to ECS') {
             agent {
                 docker {
-                    image 'amazon/aws-cli:latest'  // Use a pre-built AWS CLI Docker image
+                    image 'amazon/aws-cli:latest'  // Use a pre-built AWS CLI Docker image for ECS deployment
+                    args '-v /var/run/docker.sock:/var/run/docker.sock'  // Optional if needed by AWS CLI
                 }
             }
             steps {
                 script {
                     echo "Deploying Image to ECS..."
-                    withAWS(credentials: 'awscreds', region: 'us-west-2') {
-                        sh 'aws sts get-caller-identity'
+                    withAWS(credentials: 'awscreds', region: "${region}") {
+                        sh 'aws ecs update-service --cluster ${cluster} --service ${service} --force-new-deployment'
                     }
                 }
             }
