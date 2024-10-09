@@ -13,7 +13,6 @@ pipeline {
         registryCreds = 'ecr:us-west-2:awscreds'
         cluster = "phpwebapp"
         service = "webapptask-svc"
-        region = 'us-west-2'
     }
 
     stages {
@@ -66,9 +65,8 @@ pipeline {
             steps {
                 script {
                     echo "Deploying Image to ECS..."
-                    sh 'mkdir -p /tmp/.docker'  // Ensure the directory exists
-                    withAWS(credentials: 'awscreds', region: "${region}") {
-                        sh "aws ecs update-service --cluster ${cluster} --service ${service} --force-new-deployment"
+                    withAWS(credentials: 'awscreds', region: 'us-west-2') {
+                        sh 'aws sts get-caller-identity'
                     }
                 }
             }
