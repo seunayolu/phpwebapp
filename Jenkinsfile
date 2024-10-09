@@ -2,6 +2,7 @@ pipeline {
     agent {
         docker {
             image 'docker:latest'  // Use Docker agent for build and push stages
+            reuseNode true  // reuse the same container for consistency
             args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
