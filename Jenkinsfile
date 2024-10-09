@@ -29,7 +29,8 @@ pipeline {
             steps {
                 script {
                     echo 'Building Docker Image from Dockerfile...'
-                    dockerImage = docker.build(repoUri + ":$BUILD_NUMBER", ".")
+                    sh 'mkdir -p /tmp/.docker'  // Ensure the directory exists
+                    dockerImage = docker.build(repoUri + ":$BUILD_NUMBER")
                 }
             }
         }
@@ -65,6 +66,7 @@ pipeline {
             steps {
                 script {
                     echo "Deploying Image to ECS..."
+                    sh 'mkdir -p /tmp/.docker'  // Ensure the directory exists
                     withAWS(credentials: 'awscreds', region: "${region}") {
                         sh "aws ecs update-service --cluster ${cluster} --service ${service} --force-new-deployment"
                     }
