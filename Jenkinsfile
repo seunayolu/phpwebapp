@@ -59,7 +59,7 @@ pipeline {
         stage('Deploy to ECS') {
             agent {
                 docker {
-                    image 'amazon/aws-cli'  // Use a pre-built AWS CLI Docker image
+                    image 'amazon/aws-cli:latest'  // Use a pre-built AWS CLI Docker image
                 }
             }
             steps {
