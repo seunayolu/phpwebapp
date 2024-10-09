@@ -59,23 +59,6 @@ pipeline {
             }
         }
 
-        stage('Deploy to ECS') {
-            agent {
-                docker {
-                    image 'amazon/aws-cli:latest'  // Use a pre-built AWS CLI Docker image for ECS deployment
-                    args '-v /var/run/docker.sock:/var/run/docker.sock --entrypoint=""'  // Optional if needed by AWS CLI
-                }
-            }
-            steps {
-                script {
-                    echo "Deploying Image to ECS..."
-                    withAWS(credentials: 'awscreds', region: "${region}") {
-                        sh 'aws --version'
-                    }
-                }
-            }
-        }
-
         stage('Prune Docker System') {
             agent {
                 docker {
@@ -87,6 +70,23 @@ pipeline {
                 script {
                     echo 'Pruning Docker System'
                     sh 'docker system prune -af --volumes'
+                }
+            }
+        }
+
+        stage('Deploy to ECS') {
+            agent {
+                docker {
+                    image 'amazon/aws-cli:latest'  // Use a pre-built AWS CLI Docker image for ECS deployment
+                    args '-v /var/run/docker.sock:/var/run/docker.sock --entrypoint=""'  // Optional if needed by AWS CLI
+                }
+            }
+            steps {
+                script {
+                    echo "Deploying Image to ECS..."
+                    withAWS(credentials: 'awscreds', region: "${region}") {
+                        sh 'aws sts get-caller-identity'
+                    }
                 }
             }
         }
