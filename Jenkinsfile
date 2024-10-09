@@ -59,21 +59,6 @@ pipeline {
             }
         }
 
-        stage('Prune Docker System') {
-            agent {
-                docker {
-                    image 'docker:latest'
-                    args '-v /var/run/docker.sock:/var/run/docker.sock'  // Mount Docker socket
-                }
-            }
-            steps {
-                script {
-                    echo 'Pruning Docker System'
-                    sh 'docker system prune -af --volumes'
-                }
-            }
-        }
-
         stage('Deploy to ECS') {
             agent {
                 docker {
@@ -87,6 +72,21 @@ pipeline {
                     withAWS(credentials: 'awscreds', region: "${region}") {
                         sh 'aws sts get-caller-identity'
                     }
+                }
+            }
+        }
+
+        stage('Prune Docker System') {
+            agent {
+                docker {
+                    image 'docker:latest'
+                    args '-v /var/run/docker.sock:/var/run/docker.sock'  // Mount Docker socket
+                }
+            }
+            steps {
+                script {
+                    echo 'Pruning Docker System'
+                    sh 'docker system prune -af --volumes'
                 }
             }
         }
