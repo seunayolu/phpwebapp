@@ -1,7 +1,7 @@
 pipeline {
-    agent none  // No global agent, each stage will define its own
+    agent none
     environment {
-        DOCKER_CONFIG = '/tmp/.docker'  // Set to a directory with write access
+        DOCKER_CONFIG = '/tmp/.docker'
         repoUri = "442042522885.dkr.ecr.us-west-2.amazonaws.com/webapp"
         repoRegistryUrl = "https://442042522885.dkr.ecr.us-west-2.amazonaws.com"
         registryCreds = 'ecr:us-west-2:awscreds'
@@ -9,61 +9,54 @@ pipeline {
         service = "webapptask-svc"
         region = 'us-west-2'
     }
+    
+    options {
+        skipStagesAfterUnstable()  // Skip subsequent stages if any stage becomes unstable
+    }
 
     stages {
-        stage('Docker Test') {
+        stage('Build & Push Docker Image') {
             agent {
                 docker {
                     image 'docker:latest'
-                    args '-v /var/run/docker.sock:/var/run/docker.sock'  // Mount Docker socket
+                    args '-v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }
-            steps {
-                script {
-                    sh 'docker ps'
+            stages {
+                stage('Docker Test') {
+                    steps {
+                        script {
+                            sh 'docker ps'
+                        }
+                    }
                 }
-            }
-        }
-
-        stage('Build Docker Image') {
-            agent {
-                docker {
-                    image 'docker:latest'
-                    args '-v /var/run/docker.sock:/var/run/docker.sock'  // Mount Docker socket
+                stage('Build Docker Image') {
+                    steps {
+                        script {
+                            echo 'Building Docker Image from Dockerfile...'
+                            sh 'mkdir -p /tmp/.docker'
+                            dockerImage = docker.build(repoUri + ":$BUILD_NUMBER")
+                        }
+                    }
                 }
-            }
-            steps {
-                script {
-                    echo 'Building Docker Image from Dockerfile...'
-                    sh 'mkdir -p /tmp/.docker'  // Ensure the directory exists
-                    dockerImage = docker.build(repoUri + ":$BUILD_NUMBER")
-                }
-            }
-        }
-
-        stage('Push Docker Image to ECR') {
-            agent {
-                docker {
-                    image 'docker:latest'
-                    args '-v /var/run/docker.sock:/var/run/docker.sock'  // Mount Docker socket
-                }
-            }
-            steps {
-                script {
-                    echo "Pushing Docker Image to ECR..."
-                    docker.withRegistry(repoRegistryUrl, registryCreds) {
-                        dockerImage.push("$BUILD_NUMBER")
-                        dockerImage.push('latest')
+                stage('Push Docker Image to ECR') {
+                    steps {
+                        script {
+                            echo "Pushing Docker Image to ECR..."
+                            docker.withRegistry(repoRegistryUrl, registryCreds) {
+                                dockerImage.push("$BUILD_NUMBER")
+                                dockerImage.push('latest')
+                            }
+                        }
                     }
                 }
             }
         }
-
         stage('Prune Docker System') {
             agent {
                 docker {
                     image 'docker:latest'
-                    args '-v /var/run/docker.sock:/var/run/docker.sock'  // Mount Docker socket
+                    args '-v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }
             steps {
@@ -73,12 +66,11 @@ pipeline {
                 }
             }
         }
-
         stage('Deploy to ECS') {
             agent {
                 docker {
-                    image 'amazon/aws-cli:latest'  // Use a pre-built AWS CLI Docker image for ECS deployment
-                    args '-v /var/run/docker.sock:/var/run/docker.sock --entrypoint=""'  // Optional if needed by AWS CLI
+                    image 'amazon/aws-cli:latest'
+                    args '-v /var/run/docker.sock:/var/run/docker.sock --entrypoint=""'
                 }
             }
             steps {
