@@ -70,7 +70,7 @@ pipeline {
                 script {
                     echo "Deploying Image to ECS..."
                     withAWS(credentials: 'awscreds', region: "${region}") {
-                        sh 'aws sts get-caller-identity'
+                        sh 'aws --version'
                     }
                 }
             }
