@@ -1,36 +1,55 @@
 #!/bin/bash
 
-# Update the apt repository
+# update the software packages on the ec2 instance 
 sudo yum update -y
 
-# Install httpd on Amazon Linux 2023
+# install the apache web server, enable it to start on boot, and then start the server immediately
+sudo yum install -y git httpd
+sudo systemctl enable httpd 
+sudo systemctl start httpd
 
-sudo yum install git httpd -y
-
-# Install apache and php dependencies for the php web app
-sudo amazon-linux-extras enable php8.3
+# install php 8 along with several necessary extensions for wordpress to run
 sudo yum install -y \
+php \
 php-cli \
-php-common \
+php-cgi \
 php-curl \
-php-xml \
 php-mbstring \
+php-gd \
 php-mysqlnd \
-php-json 
+php-gettext \
+php-json \
+php-xml \
+php-fpm \
+php-intl \
+php-zip \
+php-bcmath \
+php-ctype \
+php-fileinfo \
+php-openssl \
+php-pdo \
+php-tokenizer
 
-# Variable for EFS
+# Install Mysql-Client 
+sudo wget https://dev.mysql.com/get/mysql80-community-release-el9-1.noarch.rpm 
+sudo dnf install mysql80-community-release-el9-1.noarch.rpm -y
+sudo rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2023
+sudo dnf repolist enabled | grep "mysql.*-community.*"
+sudo dnf install -y mysql-community-server 
 
-EFS_DNS_NAME=fs-0a6b29d643e23c629.efs.eu-west-2.amazonaws.com
+# start and enable the mysql server
+sudo systemctl start mysqld
+sudo systemctl enable mysqld
 
-# EFS Mount to the /var/www/html
+# environment variable
+EFS_DNS_NAME=fs-0726cecdf3422abe5.efs.eu-west-2.amazonaws.com
 
+# mount the efs to the html directory 
 echo "$EFS_DNS_NAME:/ /var/www/html nfs4 nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 0 0" >> /etc/fstab
 mount -a
 
-# Update /var/www/html directory permission
-sudo chown www-data:www-data /var/www/html/*.php
-sudo chmod 755 /var/www/html/*.php
-cd ~
+# set permissions
+sudo chown apache:apache -R /var/www/html
 
-# PHP Dependency to connect to AWS Parameter Store
-sudo yum install composer -y
+# restart the webserver
+sudo service httpd restart

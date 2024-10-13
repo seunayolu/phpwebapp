@@ -7,7 +7,7 @@ sudo yum update -y
 sudo mkdir -p /var/www/html
 
 # Variable for EFS
-EFS_DNS_NAME=fs-0354ce54377bf7bfb.efs.eu-west-2.amazonaws.com
+EFS_DNS_NAME=fs-0726cecdf3422abe5.efs.eu-west-2.amazonaws.com
 
 # EFS Mount to the /var/www/html
 sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport "$EFS_DNS_NAME":/ /var/www/html
