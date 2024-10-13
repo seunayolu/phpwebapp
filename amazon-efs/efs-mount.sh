@@ -65,9 +65,3 @@ sudo cp -r wordpress/* /var/www/html/
 
 # create the wp-config.php file
 sudo cp /var/www/html/wp-config-sample.php /var/www/html/wp-config.php
-
-# Copy the moodle source code to /html directory
-sudo cp -r ./* /var/www/html/
-
-# Restart the apache web server
-sudo systemctl restart httpd
