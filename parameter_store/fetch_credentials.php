@@ -17,8 +17,8 @@ function getParameter($name) {
     return $result['Parameter']['Value'];
 }
 
-$db_host = getParameter('/phpwebapp/db_host');
-$db_username = getParameter('/phpwebapp/db_username');
-$db_password = getParameter('/phpwebapp/db_password');
-$db_name = getParameter('/phpwebapp/db_name');
+$db_host = getParameter('/contactform/db-host');
+$db_username = getParameter('/contactform/db-username');
+$db_password = getParameter('/contactform/db-password');
+$db_name = getParameter('/contactform/db-name');
 ?>
