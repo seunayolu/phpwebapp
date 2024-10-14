@@ -42,7 +42,7 @@ sudo systemctl start mysqld
 sudo systemctl enable mysqld
 
 # environment variable
-EFS_DNS_NAME=fs-0726cecdf3422abe5.efs.eu-west-2.amazonaws.com
+EFS_DNS_NAME=fs-014d1f5fe7e72cef8.efs.eu-west-2.amazonaws.com
 
 # mount the efs to the html directory 
 echo "$EFS_DNS_NAME:/ /var/www/html nfs4 nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 0 0" >> /etc/fstab
@@ -52,4 +52,4 @@ mount -a
 sudo chown apache:apache -R /var/www/html
 
 # restart the webserver
-sudo service httpd restart
+sudo systemctl reload httpd
